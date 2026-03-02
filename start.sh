@@ -1,32 +1,36 @@
 #!/bin/bash
 # ================================================
 # PHP Hosting Bot - Start Script for Render
-# PHP install + bot start
+# Uses Static PHP Binary (No Root Needed)
 # ================================================
 
-echo "🐘 PHP ইনস্টল হচ্ছে..."
+echo "🐘 PHP ইনস্টল হচ্ছে (Static Binary)..."
 
-# PHP ইনস্টল করুন (Render Ubuntu environment)
-apt-get update -qq 2>/dev/null || true
-apt-get install -y -qq php php-cli php-cgi php-common php-curl php-mbstring php-xml php-zip php-mysql php-sqlite3 2>/dev/null || true
+# লোকাল বিন ফোল্ডার তৈরি
+mkdir -p bin
 
-# PHP version চেক
+# PHP ডাউনলোড করা (যদি আগে থেকে না থাকে)
+# আমরা এখানে পোর্টেবল PHP 8.2 ব্যবহার করছি যা রুট ছাড়াই চলে
+if [ ! -f "bin/php" ]; then
+    echo "📥 Downloading PHP..."
+    curl -fsSL -o bin/php https://dl.static-php.dev/static/php/8.2/bin/linux/x64/php
+    chmod +x bin/php
+fi
+
+# সিস্টেম পাথে আমাদের লোকাল বিন ফোল্ডার যুক্ত করা
+export PATH="$PWD/bin:$PATH"
+
+# PHP ইনস্টলেশন চেক
 if command -v php &> /dev/null; then
     echo "✅ PHP ইনস্টল সফল!"
     php -v
 else
-    echo "⚠️ apt-get কাজ করেনি। Alternative চেষ্টা করছি..."
-    # Render এ nix ব্যবহার করুন যদি apt না কাজ করে
-    if command -v nix-env &> /dev/null; then
-        nix-env -i php 2>/dev/null || true
-    fi
+    echo "❌ PHP ডাউনলোড ব্যর্থ হয়েছে। ইন্টারনেট কানেকশন চেক করুন।"
 fi
 
-# php-cgi check
-if command -v php-cgi &> /dev/null; then
-    echo "✅ php-cgi পাওয়া গেছে!"
-else
-    echo "⚠️ php-cgi নেই, php cli ব্যবহার হবে।"
+# php-cgi চেক (বট যাতে কনফিউজড না হয়)
+if ! command -v php-cgi &> /dev/null; then
+    echo "⚠️ php-cgi নেই, তবে মূল PHP CLI দিয়েই কাজ চলবে।"
 fi
 
 echo ""
