@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: php-hosting-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: OWNER_ID
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: DOMAIN
+        sync: false
+      - key: USE_WEBHOOK
+        value: "true"
+      - key: WEBHOOK_URL
+        sync: false
+      - key: FLASK_SECRET
+        generateValue: true
+      - key: WEBHOOK_SECRET
+        generateValue: true
