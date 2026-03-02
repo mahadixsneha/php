@@ -1,0 +1,7 @@
+pyTelegramBotAPI==4.18.0
+Flask==3.0.3
+pymongo==4.7.3
+qrcode[pil]==7.4.2
+requests==2.31.0
+Pillow==10.4.0
+dnspython==2.6.1
